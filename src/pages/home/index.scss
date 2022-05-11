@@ -1,0 +1,54 @@
+.home {
+
+    &-banner {
+        background-color: #FFAB3B;
+
+        .mySwiper {
+            padding: 20px 30px;
+
+            .swiper-horizontal>.swiper-pagination-bullets,
+            .swiper-pagination-bullets.swiper-pagination-horizontal,
+            .swiper-pagination-custom,
+            .swiper-pagination-fraction {
+                bottom: 3px;
+            }
+
+
+            img {
+                width: 100%;
+            }
+        }
+    }
+
+    &-product {
+        display: grid;
+        grid-template-columns: auto auto auto auto auto auto;
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+
+    &-new {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+
+    h2 {
+        text-align: center;
+        margin: 60px auto;
+        font-size: 32px;
+    }
+
+    &-all {
+        text-align: center;
+        margin-bottom: 60px;
+
+        a {
+            text-decoration: none;
+            color: #FFAB3B;
+            font-weight: bold;
+        }
+    }
+
+}

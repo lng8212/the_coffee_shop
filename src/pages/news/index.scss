@@ -1,0 +1,15 @@
+.news {
+
+    h2 {
+        text-align: center;
+        margin: 60px auto;
+        font-size: 32px;
+    }
+
+    &-list {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+}

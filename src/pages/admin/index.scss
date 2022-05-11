@@ -1,0 +1,67 @@
+.admin {
+
+    &-container {
+        max-width: 900px;
+        padding: 40px;
+        margin: 0px auto;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 50px auto;
+    }
+
+    th {
+        background: #FFAB3B;
+        color: white;
+        font-weight: bold;
+    }
+
+    td,
+    th {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+
+    &-image {
+        width: 80px;
+    }
+
+    &-action {
+
+        button {
+            height: 30px;
+            padding: 2px 16px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 30px;
+        }
+
+        button:first-child {
+            background-color: #bd391c;
+            margin-right: 10px;
+        }
+
+        button:last-child {
+            background-color: #1c64bd;
+        }
+    }
+
+    .btn-add {
+        height: 30px;
+        padding: 2px 16px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        border-radius: 30px;
+        background-color: #1cbd39;
+    }
+}
