@@ -1,6 +1,15 @@
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./index.scss";
 
 const Checkout = () => {
+  const navigate = useNavigate();
+
+  const order = () => {
+    navigate("/");
+    toast("Cảm ơn bạn đã đặt hàng! Đơn hàng sẽ đến với bạn trong ít phút nữa");
+  };
+
   return (
     <div className="checkout">
       <div className="checkout-container">
@@ -41,9 +50,36 @@ const Checkout = () => {
             <div className="checkout-order__content">
               <div className="checkout-order__header">
                 <h3 className="checkout-info__title">Các món đã chọn</h3>
-                <button>Thêm món</button>
+                <button onClick={() => navigate("/products")}>Thêm món</button>
               </div>
-              <div className="checkout-order__product"></div>
+              <div className="checkout-order__product">
+                <div>
+                  <div className="checkout-order__product-item">
+                    <div>
+                      <p>Bạc sửu nóng X 1</p>
+                      <p>Vừa</p>
+                    </div>
+                    <div>35,000 đ</div>
+                  </div>
+                  <div className="checkout-order__product-action">
+                    <a>Sửa</a>
+                    <a>Xoá</a>
+                  </div>
+                </div>
+                <div>
+                  <div className="checkout-order__product-item">
+                    <div>
+                      <p>Bạc sửu đá X 2</p>
+                      <p>Vừa</p>
+                    </div>
+                    <div>70,000 đ</div>
+                  </div>
+                  <div className="checkout-order__product-action">
+                    <a>Sửa</a>
+                    <a>Xoá</a>
+                  </div>
+                </div>
+              </div>
               <h3 className="checkout-info__title">Tổng cộng</h3>
               <div className="checkout-order__total">
                 <div>Thành tiền</div>
@@ -59,7 +95,7 @@ const Checkout = () => {
                 <p>Thành tiền</p>
                 <p>160,000 đ</p>
               </div>
-              <button>Đặt hàng</button>
+              <button onClick={order}>Đặt hàng</button>
             </div>
 
             <div className="checkout-order__delete">Xoá đơn hàng</div>
