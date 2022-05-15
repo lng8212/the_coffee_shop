@@ -43,7 +43,7 @@ const Checkout = () => {
             <input type="checkbox" id="accept" className="checkout-checkbox" />
             <label htmlFor="accept">
               Đồng ý với các điều khoản và điều kiện mua hàng của The Coffee
-              House
+              Shop
             </label>
           </div>
           <div className="checkout-order">
