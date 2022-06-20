@@ -1,10 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.scss";
 import MyModal from "../../components/modal";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const urlApi = "http://localhost:8080/CoffeeShop";
 
 const AdminPage = () => {
   const [isOpenAdd, setIsOpenAdd] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
+
+  const [tab, setTab] = useState("drink");
+
+  const [drinks, setDrinks] = useState([]);
+  const [listNews, setListNews] = useState([]);
+
+  const getListDrinks = async () => {
+    const res = await axios.get(`${urlApi}/getDrinks`);
+    if (res) {
+      console.log(res);
+      setDrinks(res.data);
+    }
+  };
+
+  const getListNews = async () => {
+    const res = await axios.get(`${urlApi}/news`);
+    if (res) {
+      console.log(res);
+      setListNews(res.data);
+    }
+  };
+
+  useEffect(() => {
+    if (tab === "drink") {
+      getListDrinks();
+    } else {
+      getListNews();
+    }
+  }, [tab]);
 
   const [drink, setDrink] = useState({});
 
@@ -31,7 +64,76 @@ const AdminPage = () => {
     });
   };
 
-  const [tab, setTab] = useState("drink");
+  const onDeleteDrinks = async (id) => {
+    const result = window.confirm("Bạn có muốn xoá không?");
+    if (result) {
+      const res = await axios.delete(`${urlApi}/drink?id_drink=${id}`);
+      if (res) {
+        const list = drinks.filter((dr) => dr.id_drink !== id);
+        setDrinks([...list]);
+        toast.success("Xoá thức uống thành công!");
+      }
+    }
+  };
+
+  const onAddDrinks = async () => {
+    const res = await axios.put(`${urlApi}/drink`, JSON.stringify(drink));
+    if (res) {
+      setDrinks([...drinks, drink]);
+      setIsOpenAdd(false);
+      toast.success("Thêm thức uống thành công!");
+    }
+  };
+
+  const onEditDrinks = async () => {
+    const res = await axios.put(`${urlApi}/drink`, JSON.stringify(drink));
+    if (res) {
+      const index = drinks.findIndex(
+        (list) => list.id_drink === drink.id_drink
+      );
+      console.log(index);
+      if (index !== -1) {
+        drinks[index] = drink;
+        setDrinks([...drinks]);
+        setIsOpenEdit(false);
+        toast.success("Cập nhật thức uống thành công!");
+      }
+    }
+  };
+
+  const onDeleteNews = async (id) => {
+    const result = window.confirm("Bạn có muốn xoá không?");
+    if (result) {
+      const res = await axios.delete(`${urlApi}/news?id=${id}`);
+      if (res) {
+        const list = listNews.filter((ne) => ne.id_news !== id);
+        setListNews([...list]);
+        toast.success("Xoá tin tức thành công!");
+      }
+    }
+  };
+
+  const onAddNews = async () => {
+    const res = await axios.post(`${urlApi}/news`, JSON.stringify(news));
+    if (res) {
+      setListNews([...listNews, news]);
+      setIsOpenAddNew(false);
+      toast.success("Thêm tin tức thành công!");
+    }
+  };
+
+  const onEditNews = async () => {
+    const res = await axios.put(`${urlApi}/news`, JSON.stringify(news));
+    if (res) {
+      const index = listNews.findIndex((list) => list.id_news === news.id_news);
+      if (index !== -1) {
+        listNews[index] = news;
+        setListNews([...listNews]);
+        setIsOpenEditNew(false);
+        toast.success("Cập nhật tin tức thành công!");
+      }
+    }
+  };
 
   return (
     <div className="admin">
@@ -63,7 +165,10 @@ const AdminPage = () => {
                   <th style={{ width: 300 }}>
                     <button
                       className="btn-add"
-                      onClick={() => setIsOpenAdd(true)}
+                      onClick={() => {
+                        setDrink({});
+                        setIsOpenAdd(true);
+                      }}
                     >
                       Thêm đồ uống mới
                     </button>
@@ -71,96 +176,31 @@ const AdminPage = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Latte đá xay</td>
-                  <td>49000</td>
-                  <td>
-                    <img
-                      src="https://minio.thecoffeehouse.com/image/admin/latte-da_438410.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEdit(true)}>Edit</button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Latte đá xay</td>
-                  <td>49000</td>
-                  <td>
-                    <img
-                      src="https://minio.thecoffeehouse.com/image/admin/latte-da_438410.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEdit(true)}>Edit</button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Latte đá xay</td>
-                  <td>49000</td>
-                  <td>
-                    <img
-                      src="https://minio.thecoffeehouse.com/image/admin/latte-da_438410.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEdit(true)}>Edit</button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Latte đá xay</td>
-                  <td>49000</td>
-                  <td>
-                    <img
-                      src="https://minio.thecoffeehouse.com/image/admin/latte-da_438410.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEdit(true)}>Edit</button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Latte đá xay</td>
-                  <td>49000</td>
-                  <td>
-                    <img
-                      src="https://minio.thecoffeehouse.com/image/admin/latte-da_438410.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEdit(true)}>Edit</button>
-                    </div>
-                  </td>
-                </tr>
+                {drinks.map((dr, i) => (
+                  <tr>
+                    <td>{i + 1}</td>
+                    <td>{dr.name_drink}</td>
+                    <td>{dr.price}</td>
+                    <td>
+                      <img src={dr.img} alt="" className="admin-image" />
+                    </td>
+                    <td>
+                      <div className="admin-action">
+                        <button onClick={() => onDeleteDrinks(dr.id_drink)}>
+                          Delete
+                        </button>
+                        <button
+                          onClick={() => {
+                            setIsOpenEdit(true);
+                            setDrink(dr);
+                          }}
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -173,10 +213,10 @@ const AdminPage = () => {
               <input
                 type="text"
                 placeholder="Name"
-                value={drink.name}
+                value={drink.name_drink}
                 onChange={onChangeDrink}
                 className="admin-input"
-                name="name"
+                name="name_drink"
               />
               <input
                 type="text"
@@ -186,18 +226,26 @@ const AdminPage = () => {
                 className="admin-input"
                 name="price"
               />
+              <textarea
+                placeholder="Description"
+                value={drink.descript}
+                onChange={onChangeDrink}
+                className="admin-textarea"
+                rows={5}
+                name="descript"
+              />
               <input
                 type="text"
                 placeholder="Image"
-                value={drink.image}
+                value={drink.img}
                 onChange={onChangeDrink}
                 className="admin-input"
-                name="image"
+                name="img"
               />
-              <img src={drink.image} alt="" className="admin-preview" />
+              <img src={drink.img} alt="" className="admin-preview" />
               <div className="admin-action">
-                <button>Cancel</button>
-                <button onClick={() => {}}>Save</button>
+                <button onClick={() => setIsOpenAdd(false)}>Cancel</button>
+                <button onClick={onAddDrinks}>Save</button>
               </div>
             </div>
           </MyModal>
@@ -211,10 +259,10 @@ const AdminPage = () => {
               <input
                 type="text"
                 placeholder="Name"
-                value={drink.name}
+                value={drink.name_drink}
                 onChange={onChangeDrink}
                 className="admin-input"
-                name="name"
+                name="name_drink"
               />
               <input
                 type="text"
@@ -224,18 +272,26 @@ const AdminPage = () => {
                 className="admin-input"
                 name="price"
               />
+              <textarea
+                placeholder="Description"
+                value={drink.descript}
+                onChange={onChangeDrink}
+                className="admin-textarea"
+                rows={5}
+                name="descript"
+              />
               <input
                 type="text"
                 placeholder="Image"
-                value={drink.image}
+                value={drink.img}
                 onChange={onChangeDrink}
                 className="admin-input"
-                name="image"
+                name="img"
               />
-              <img src={drink.image} alt="" className="admin-preview" />
+              <img src={drink.img} alt="" className="admin-preview" />
               <div className="admin-action">
-                <button>Cancel</button>
-                <button onClick={() => {}}>Save</button>
+                <button onClick={() => setIsOpenEdit(false)}>Cancel</button>
+                <button onClick={onEditDrinks}>Save</button>
               </div>
             </div>
           </MyModal>
@@ -248,13 +304,16 @@ const AdminPage = () => {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th style={{ width: 500 }}>Title</th>
-                  <th style={{ width: 500 }}>Content</th>
+                  <th style={{ width: 500 }}>Name</th>
+                  <th style={{ width: 500 }}>Description</th>
                   <th style={{ width: 100 }}>Image</th>
                   <th style={{ width: 300 }}>
                     <button
                       className="btn-add"
-                      onClick={() => setIsOpenAddNew(true)}
+                      onClick={() => {
+                        setNews({});
+                        setIsOpenAddNew(true);
+                      }}
                     >
                       Thêm bài viết mới
                     </button>
@@ -262,106 +321,31 @@ const AdminPage = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>CÓ CÔNG TÍCH LUỸ BEAN - CÓ NGÀY NHẬN DEAL ĐẬM</td>
-                  <td>sdfsdfsdfsdfse</td>
-                  <td>
-                    <img
-                      src="https://feed.thecoffeehouse.com//content/images/2022/03/NEWS--1-.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEditNew(true)}>
-                        Edit
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>CÓ CÔNG TÍCH LUỸ BEAN - CÓ NGÀY NHẬN DEAL ĐẬM</td>
-                  <td>sdfsdfsdfsdfse</td>
-                  <td>
-                    <img
-                      src="https://feed.thecoffeehouse.com//content/images/2022/03/NEWS--1-.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEditNew(true)}>
-                        Edit
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>CÓ CÔNG TÍCH LUỸ BEAN - CÓ NGÀY NHẬN DEAL ĐẬM</td>
-                  <td>sdfsdfsdfsdfse</td>
-                  <td>
-                    <img
-                      src="https://feed.thecoffeehouse.com//content/images/2022/03/NEWS--1-.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEditNew(true)}>
-                        Edit
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>CÓ CÔNG TÍCH LUỸ BEAN - CÓ NGÀY NHẬN DEAL ĐẬM</td>
-                  <td>sdfsdfsdfsdfse</td>
-                  <td>
-                    <img
-                      src="https://feed.thecoffeehouse.com//content/images/2022/03/NEWS--1-.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEditNew(true)}>
-                        Edit
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>CÓ CÔNG TÍCH LUỸ BEAN - CÓ NGÀY NHẬN DEAL ĐẬM</td>
-                  <td>sdfsdfsdfsdfse</td>
-                  <td>
-                    <img
-                      src="https://feed.thecoffeehouse.com//content/images/2022/03/NEWS--1-.jpg"
-                      alt=""
-                      className="admin-image"
-                    />
-                  </td>
-                  <td>
-                    <div className="admin-action">
-                      <button>Delete</button>
-                      <button onClick={() => setIsOpenEditNew(true)}>
-                        Edit
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                {listNews.map((ne, i) => (
+                  <tr>
+                    <td>{i + 1}</td>
+                    <td>{ne.name_news}</td>
+                    <td>{ne.descript}</td>
+                    <td>
+                      <img src={ne.img} alt="" className="admin-image" />
+                    </td>
+                    <td>
+                      <div className="admin-action">
+                        <button onClick={() => onDeleteNews(ne.id_news)}>
+                          Delete
+                        </button>
+                        <button
+                          onClick={() => {
+                            setIsOpenEditNew(true);
+                            setNews(ne);
+                          }}
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -373,32 +357,32 @@ const AdminPage = () => {
             <div className="admin-input-wp">
               <input
                 type="text"
-                placeholder="Title"
-                value={news.title}
+                placeholder="Name"
+                value={news.name_news}
                 onChange={onChangeNews}
                 className="admin-input"
-                name="title"
+                name="name_news"
               />
-              <input
-                type="text"
-                placeholder="Content"
-                value={news.content}
+              <textarea
+                placeholder="Description"
+                value={news.descript}
                 onChange={onChangeNews}
-                className="admin-input"
-                name="content"
+                className="admin-textarea"
+                rows={5}
+                name="descript"
               />
               <input
                 type="text"
                 placeholder="Image"
-                value={news.image}
+                value={news.img}
                 onChange={onChangeNews}
                 className="admin-input"
-                name="news"
+                name="img"
               />
-              <img src={news.image} alt="" className="admin-preview" />
+              <img src={news.img} alt="" className="admin-preview" />
               <div className="admin-action">
-                <button>Cancel</button>
-                <button onClick={() => {}}>Save</button>
+                <button onClick={() => setIsOpenAddNew(false)}>Cancel</button>
+                <button onClick={onAddNews}>Save</button>
               </div>
             </div>
           </MyModal>
@@ -411,32 +395,32 @@ const AdminPage = () => {
             <div className="admin-input-wp">
               <input
                 type="text"
-                placeholder="Title"
-                value={news.title}
+                placeholder="Name"
+                value={news.name_news}
                 onChange={onChangeNews}
                 className="admin-input"
-                name="title"
+                name="name_news"
               />
-              <input
-                type="text"
-                placeholder="Content"
-                value={news.content}
+              <textarea
+                placeholder="Description"
+                value={news.descript}
                 onChange={onChangeNews}
-                className="admin-input"
-                name="content"
+                className="admin-textarea"
+                rows={5}
+                name="descript"
               />
               <input
                 type="text"
                 placeholder="Image"
-                value={news.image}
+                value={news.img}
                 onChange={onChangeNews}
                 className="admin-input"
-                name="news"
+                name="img"
               />
-              <img src={news.image} alt="" className="admin-preview" />
+              <img src={news.img} alt="" className="admin-preview" />
               <div className="admin-action">
-                <button>Cancel</button>
-                <button onClick={() => {}}>Save</button>
+                <button onClick={() => setIsOpenEditNew(false)}>Cancel</button>
+                <button onClick={onEditNews}>Save</button>
               </div>
             </div>
           </MyModal>

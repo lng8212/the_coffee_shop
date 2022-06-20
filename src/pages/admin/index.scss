@@ -8,6 +8,14 @@
         margin-bottom: 20px;
     }
 
+    &-textarea {
+        width: 100%;
+        border: 1px solid #ccc;
+        padding-left: 20px;
+        margin-bottom: 20px;
+        resize: none;
+    }
+
     &-preview {
         width: 100%;
     }
