@@ -3,6 +3,7 @@ import "./index.scss";
 import MyModal from "../../components/modal";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const urlApi = "http://localhost:8080/CoffeeShop";
 
@@ -14,6 +15,8 @@ const AdminPage = () => {
 
   const [drinks, setDrinks] = useState([]);
   const [listNews, setListNews] = useState([]);
+
+  const navigate = useNavigate();
 
   const getListDrinks = async () => {
     const res = await axios.get(`${urlApi}/getDrinks`);
@@ -149,6 +152,12 @@ const AdminPage = () => {
           className={tab === "new" ? "active" : ""}
         >
           Tin tức
+        </a>
+        <a
+          onClick={() => setTab("bill")}
+          className={tab === "bill" ? "active" : ""}
+        >
+          Hóa đơn
         </a>
       </div>
       {tab === "drink" ? (
@@ -296,7 +305,7 @@ const AdminPage = () => {
             </div>
           </MyModal>
         </>
-      ) : (
+      ) : tab === "new" ? (
         <>
           <div className="admin-container">
             <h1>Quản lý tin tức</h1>
@@ -425,6 +434,38 @@ const AdminPage = () => {
             </div>
           </MyModal>
         </>
+      ) : (
+        <div className="admin-container">
+          <h1>Danh sách hóa đơn</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th style={{ width: 500 }}>Customer</th>
+                <th style={{ width: 500 }}>Total Price</th>
+                <th style={{ width: 300 }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Tran Van Thang</td>
+                <td>350000 đ</td>
+                <td>
+                  <div className="admin-action">
+                    <button
+                      onClick={() => {
+                        navigate(`/bill/${1}`);
+                      }}
+                    >
+                      View
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
