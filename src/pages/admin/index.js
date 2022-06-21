@@ -15,6 +15,7 @@ const AdminPage = () => {
 
   const [drinks, setDrinks] = useState([]);
   const [listNews, setListNews] = useState([]);
+  const [listBill, setListBill] = useState([]);
 
   const navigate = useNavigate();
 
@@ -34,11 +35,21 @@ const AdminPage = () => {
     }
   };
 
+  const getListBill = async () => {
+    const res = await axios.get(`${urlApi}/bill`);
+    if (res) {
+      console.log(res);
+      setListBill(res.data);
+    }
+  };
+
   useEffect(() => {
     if (tab === "drink") {
       getListDrinks();
-    } else {
+    } else if (tab === "new") {
       getListNews();
+    } else {
+      getListBill();
     }
   }, [tab]);
 
@@ -80,9 +91,11 @@ const AdminPage = () => {
   };
 
   const onAddDrinks = async () => {
-    const res = await axios.put(`${urlApi}/drink`, JSON.stringify(drink));
+    const newDrink = { ...drink };
+    newDrink.id_type = 1;
+    const res = await axios.post(`${urlApi}/drink`, JSON.stringify(newDrink));
     if (res) {
-      setDrinks([...drinks, drink]);
+      setDrinks([...drinks, newDrink]);
       setIsOpenAdd(false);
       toast.success("Thêm thức uống thành công!");
     }
@@ -442,27 +455,29 @@ const AdminPage = () => {
               <tr>
                 <th>#</th>
                 <th style={{ width: 500 }}>Customer</th>
-                <th style={{ width: 500 }}>Total Price</th>
+                <th style={{ width: 500 }}>Order Day</th>
                 <th style={{ width: 300 }}></th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Tran Van Thang</td>
-                <td>350000 đ</td>
-                <td>
-                  <div className="admin-action">
-                    <button
-                      onClick={() => {
-                        navigate(`/bill/${1}`);
-                      }}
-                    >
-                      View
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              {listBill.map((list, i) => (
+                <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td>{list.customer.name_customer}</td>
+                  <td>{list.order_day}</td>
+                  <td>
+                    <div className="admin-action">
+                      <button
+                        onClick={() => {
+                          navigate(`/bill/${list.id_bill}`);
+                        }}
+                      >
+                        View
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

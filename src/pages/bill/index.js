@@ -1,8 +1,26 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import "./index.scss";
 
+const urlApi = "http://localhost:8080/CoffeeShop";
+
 export default function BillDetail() {
+  const { id } = useParams();
+
+  const [bill, setBill] = useState({});
+
+  const getDetailBill = async (id_bill) => {
+    const res = await axios.get(`${urlApi}/checkout?id=${id_bill}`);
+    if (res) {
+      setBill(res.data);
+    }
+  };
+
+  useEffect(() => {
+    getDetailBill(id);
+  }, [id]);
+
   return (
     <div className="bill">
       <div className="bill-container">
@@ -14,13 +32,13 @@ export default function BillDetail() {
           <div className="bill-info">
             <h3 className="bill-info__title">Thông tin</h3>
             <div className="bill-input-text">
-              <strong>Họ và tên:</strong> Trần Văn Thắng
+              <strong>Họ và tên:</strong> {bill?.customer?.name_customer}
             </div>
             <div className="bill-input-text">
-              <strong>SĐT</strong>: 0987654321
+              <strong>SĐT</strong>: {bill?.customer?.phone_number}
             </div>
             <div className="bill-input-text">
-              <strong>Địa chỉ:</strong> 110 Trần Phú
+              <strong>Địa chỉ:</strong> {bill?.customer?.address}
             </div>
             <h3 className="bill-info__title">Phương thức thanh toán</h3>
             <div className="bill-info__money">
@@ -35,42 +53,32 @@ export default function BillDetail() {
             <div className="bill-order__content">
               <div className="bill-order__header">
                 <h3 className="bill-info__title">Các món đã chọn</h3>
-                <button onClick={() => {}}>Xóa</button>
               </div>
               <div className="bill-order__product">
-                <div>
-                  <div className="bill-order__product-item">
-                    <div>
-                      <p>Bạc sửu nóng X 1</p>
-                      <p>Vừa</p>
+                {bill?.listBillDetail?.map((list) => (
+                  <div>
+                    <div className="bill-order__product-item">
+                      <div>
+                        <p>
+                          {list.drink.name_drink} X {list.amount}
+                        </p>
+                        <p>{list.size.name_size}</p>
+                      </div>
+                      <div>{list.price} đ</div>
                     </div>
-                    <div>35,000 đ</div>
                   </div>
-                </div>
-                <div>
-                  <div className="bill-order__product-item">
-                    <div>
-                      <p>Bạc sửu đá X 2</p>
-                      <p>Vừa</p>
-                    </div>
-                    <div>70,000 đ</div>
-                  </div>
-                </div>
+                ))}
               </div>
-              <h3 className="bill-info__title">Tổng cộng</h3>
+              {/* <h3 className="bill-info__title">Tổng cộng</h3> */}
               <div className="bill-order__total">
-                <div>Thành tiền</div>
-                <div>150,000 đ</div>
-              </div>
-              <div className="bill-order__total">
-                <div>Phí vận chuyển</div>
-                <div>10,000 đ</div>
+                {/* <div>Thành tiền</div> */}
+                {/* <div>{bill?.totalMoney} đ</div> */}
               </div>
             </div>
             <div className="bill-order__order">
               <div>
                 <p>Thành tiền</p>
-                <p>160,000 đ</p>
+                <p>{bill?.totalMoney} đ</p>
               </div>
             </div>
           </div>
